@@ -19,10 +19,8 @@
   <h3 align="center">EOEPCA-UMA</h3>
 
   <p align="center">
-    Template for developing an EOEPCA Library
+    UMA Client Python Library developed by the EOEPCA User Management Team
     <br />
-    <a href="https://github.com/EOEPCA/um-common-uma-client"><strong>Explore the docs</strong></a>
-    .
     <a href="https://github.com/EOEPCA/um-common-uma-client/issues">Report Bug</a>
     ·
     <a href="https://github.com/EOEPCA/um-common-uma-client/issues">Request Feature</a>
