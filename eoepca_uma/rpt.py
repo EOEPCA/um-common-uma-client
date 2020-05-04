@@ -66,17 +66,17 @@ def valid_token_introspection_data(rpt_info: dict, time_margin: float = 0.0) -> 
     Returns:
         True if the token is valid at this time given this information, False otherwise.
     """
-    now = time() + time_margin
+    now = time()
 
     if "exp" in rpt_info:
-        if rpt_info["exp"] < now: return False
+        if rpt_info["exp"] < (now - time_margin) : return False
 
     # Not a time validity check per se, but a sanity check for corrupt / invalid data nontheless
     if "iat" in rpt_info:
-        if rpt_info["iat"] > now: return False
+        if rpt_info["iat"] > (now + time_margin) : return False
     
     if "nbf" in rpt_info:
-        if rpt_info["nbf"] > now: return False
+        if rpt_info["nbf"] > (now + time_margin) : return False
 
     # Actual check of validity using the AS' criteria
     return "active" in rpt_info and rpt_info["active"] == "true"
