@@ -4,8 +4,8 @@ python: 3.6.9
 jobs:
   include:
     - stage: Testing
-      install: pip install -r eoepca-uma/requirements.txt
-      script: pytest eoepca-uma/tests
+      install: pip install -r eoepca_uma/requirements.txt
+      script: pytest eoepca_uma/tests
 
 deploy:
   provider: pypi
