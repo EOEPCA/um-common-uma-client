@@ -2,7 +2,7 @@
 from requests import request
 from time import time
 
-from utils import disable_warnings_if_debug, is_ok
+from eoepca_uma.utils import disable_warnings_if_debug, is_ok
 
 def introspect(self, rpt: str, pat: str, introspection_endpoint: str, secure: bool = False) -> dict:
     """
