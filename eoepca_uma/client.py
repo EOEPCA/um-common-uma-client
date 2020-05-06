@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from requests import request
+from requests import request, Response
 
 from eoepca_uma.utils import is_ok
 
@@ -37,7 +37,7 @@ class Client:
         # Return resource when access is achieved
         return ret.content
 
-    def _handle_ticket_request(self, response: request.response) -> str:
+    def _handle_ticket_request(self, response: Response) -> str:
         """
         Returns rpt
         """
