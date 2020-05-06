@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 from requests import request, Response
+from WellKnownHandler import WellKnownHandler, TYPE_UMA_V2, KEY_UMA_V2_TOKEN_ENDPOINT
 
 from eoepca_uma.utils import is_ok
+from eoepca_uma.rpt import request_for_rpt
 
 class Client:
     """
@@ -13,10 +15,36 @@ class Client:
     img = c.request_resource("/my/image.jpg",<...>)
     """
 
-    def __init__(self, resource_server_url: str):
+    def __init__(self, resource_server_url: str, auth_server_url: str, secure: bool = True):
         self.resource_server = resource_server_url
 
+        self.wkh = WellKnownHandler(auth_server_url, secure=secure)
+
+        # TODO: Client auth
+
     def request_resource(self, uri: str, rpt: str = None, secure: bool = True) -> bytes:
+        """
+        Requests a resource from the resource server.
+
+        If you have an RPT token for this resource, you can try to re-use it calling
+        this function with your RPT, but please notice this function wont try to re-generate
+        an RPT via ticket if one is given.
+
+        If you have no RPT but you have initialized this client with the proper credentials,
+        this function call will auto-authenticate, handling ticket and RPT calls until the
+        resource is obtained.
+
+        - CAN THROW EXCEPTIONS
+        - MAKES A CONNECTION TO AN EXTERNAL ENDPOINT
+
+        Args:
+        - uri = URI to the resource you want to access inside the resource server.
+        - rpt (Optional) = String containing the rpt (token)
+        - secure (Optional) = toggle checking of SSL certificates. Activating this is recommended on production environments
+        
+        Returns:
+            The resource requested in bytes, or an exception if something went wrong.
+        """
         headers = {}
         if rpt:
             headers = {"Authorization": "Bearer "+rpt}
@@ -37,12 +65,33 @@ class Client:
         # Return resource when access is achieved
         return ret.content
 
-    def _handle_ticket_request(self, response: Response) -> str:
+    def _handle_ticket_request(self, response: Response, secure: bool = True) -> str:
         """
-        Returns rpt
-        """
-        # 
+        Handles the ticket answer when attempting to access to a resource.
 
-        pass
+        - CAN THROW EXCEPTIONS
+        - MAKES A CONNECTION TO AN EXTERNAL ENDPOINT
+
+        Args:
+        - response = Response object from requests package, after requesting access to a resource.
+        - secure (Optional) = toggle checking of SSL certificates. Activating this is recommended on production environments
+        
+        Returns:
+            RPT for this resource, or an exception
+        """
+        if "WWW-Authenticate" not in response.headers:
+            raise Exception("Response from server does not include necessary header: 'WWW-Authenticate'")
+
+        data = response.headers["WWW-Authenticate"]
+        # Get realm, as_uri, ticket
+        data = data.strip().split(",")
+        ticket= [x.split("=")[1].strip('"') for x in data if "ticket" in x ]
+
+        # TODO:
+        client_creds_token= ""
+        token_endpoint = self.wkh.get(TYPE_UMA_V2, KEY_UMA_V2_TOKEN_ENDPOINT)
+        rpt_res = request_for_rpt(client_creds_token, token_endpoint, ticket, secure=secure)
+        
+        return rpt_res["access_token"]
 
     
