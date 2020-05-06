@@ -13,7 +13,7 @@ class Client:
     img = c.request_resource("/my/image.jpg",<...>)
     """
 
-    def __init__(self, resource_server_url: str) -> Client:
+    def __init__(self, resource_server_url: str):
         self.resource_server = resource_server_url
 
     def request_resource(self, uri: str, rpt: str = None, secure: bool = True) -> bytes:
