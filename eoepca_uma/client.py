@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 from requests import request, Response
-from WellKnownHandler import WellKnownHandler, TYPE_UMA_V2, KEY_UMA_V2_TOKEN_ENDPOINT
+from WellKnownHandler import WellKnownHandler, TYPE_OIDC, KEY_OIDC_TOKEN_ENDPOINT, TYPE_UMA_V2, KEY_UMA_V2_TOKEN_ENDPOINT
+from eoepca_oidc import OpenIDClient
 
-from eoepca_uma.utils import is_ok
-from eoepca_uma.rpt import request_for_rpt
+from utils import is_ok
+from rpt import request_for_rpt
 
 class Client:
     """
@@ -15,12 +16,26 @@ class Client:
     img = c.request_resource("/my/image.jpg",<...>)
     """
 
-    def __init__(self, resource_server_url: str, auth_server_url: str, secure: bool = True):
+    def __init__(self, resource_server_url: str, auth_server_url: str, OIDClient: OpenIDClient, secure: bool = True):
+        """
+        Creates a new UMA Client instance.
+
+        - CAN THROW EXCEPTIONS
+        - MAKES A CONNECTION TO AN EXTERNAL ENDPOINT
+
+        Args:
+        - resource_server_url = URL of the resource server
+        - auth_server_url = URL of the Authorization Server
+        - OIDClient = Instance of a OpenIDClient (from eoepca_oidc), configured for the same Auth server.
+        - secure (Optional) = toggle checking of SSL certificates. Activating this is recommended on production environments
+        
+        Returns:
+            A configured UMA Client, or an exception
+        """
         self.resource_server = resource_server_url
 
         self.wkh = WellKnownHandler(auth_server_url, secure=secure)
-
-        # TODO: Client auth
+        self.oidc_client = OIDClient
 
     def request_resource(self, uri: str, rpt: str = None, secure: bool = True) -> bytes:
         """
@@ -83,12 +98,15 @@ class Client:
             raise Exception("Response from server does not include necessary header: 'WWW-Authenticate'")
 
         data = response.headers["WWW-Authenticate"]
-        # Get realm, as_uri, ticket
+        # Get ticket
         data = data.strip().split(",")
         ticket= [x.split("=")[1].strip('"') for x in data if "ticket" in x ]
 
-        # TODO:
-        client_creds_token= ""
+        # Get OIDC token
+        token_endpoint = self.wkh.get(TYPE_OIDC , KEY_OIDC_TOKEN_ENDPOINT)
+        self.oidc_client.postRequestToken({"token_endpoint": token_endpoint}, verify=secure)
+        client_creds_token= self.oidc_client.token
+
         token_endpoint = self.wkh.get(TYPE_UMA_V2, KEY_UMA_V2_TOKEN_ENDPOINT)
         rpt_res = request_for_rpt(client_creds_token, token_endpoint, ticket, secure=secure)
         

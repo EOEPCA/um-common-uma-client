@@ -2,9 +2,9 @@
 from requests import request
 from typing import List
 
-from eoepca_uma.utils import dict_insert_if_exists
-from eoepca_uma.utils import disable_warnings_if_debug
-from eoepca_uma.utils import is_ok
+from utils import dict_insert_if_exists
+from utils import disable_warnings_if_debug
+from utils import is_ok
 
 # Client utilities
 
