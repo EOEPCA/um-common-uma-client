@@ -3,7 +3,7 @@ from requests import request
 from time import time
 from typing import List
 
-from utils import disable_warnings_if_debug, is_ok
+from eoepca_uma.utils import disable_warnings_if_debug, is_ok
 
 def introspect(rpt: str, pat: str, introspection_endpoint: str, secure: bool = False) -> dict:
     """

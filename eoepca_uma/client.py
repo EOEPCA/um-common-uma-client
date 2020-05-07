@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 from requests import request, Response
-from WellKnownHandler import WellKnownHandler, TYPE_OIDC, KEY_OIDC_TOKEN_ENDPOINT, TYPE_UMA_V2, KEY_UMA_V2_TOKEN_ENDPOINT
+from WellKnownHandler import WellKnownHandler, TYPE_OIDC, KEY_OIDC_TOKEN_ENDPOINT
+from WellKnownHandler import TYPE_UMA_V2, KEY_UMA_V2_TOKEN_ENDPOINT
 from eoepca_oidc import OpenIDClient
 
-from utils import is_ok
-from rpt import request_for_rpt
+from eoepca_uma.utils import is_ok
+from eoepca_uma.rpt import request_for_rpt
 
 class Client:
     """
