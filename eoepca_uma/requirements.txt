@@ -4,4 +4,4 @@ idna==2.9
 requests==2.23.0
 urllib3==1.25.9
 WellKnownHandler==0.2.0
-eoepca_oidc==0.0.2
+eoepca-oidc==0.0.2
