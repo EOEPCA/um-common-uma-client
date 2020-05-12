@@ -32,7 +32,7 @@ def introspect(rpt: str, pat: str, introspection_endpoint: str, secure: bool = F
     r = request("POST", introspection_endpoint, headers=headers, data=payload, verify=secure)
 
     if not is_ok(r):
-        raise Exception("An error occurred while registering the resource: "+str(r.code)+":"+str(r.reason))
+        raise Exception("An error occurred while registering the resource: "+str(r.status_code)+":"+str(r.reason))
 
     try:
         return r.json()
@@ -155,7 +155,7 @@ def request_for_rpt(client_creds_token: str,
     response = request("POST", token_endpoint , data=payload, headers=headers, verify=secure)
 
     if not is_ok(response):
-        raise Exception("An error occurred while requesting RPT: "+str(response.code)+":"+str(response.reason))
+        raise Exception("An error occurred while requesting RPT: "+str(response.status_code)+":"+str(response.reason))
 
     return response.json()
 

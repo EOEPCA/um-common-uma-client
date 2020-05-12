@@ -35,7 +35,7 @@ def read(pat: str, resource_registration_endpoint: str,
     response = request("GET", resource_registration_endpoint + resource_id, headers=headers, verify=secure)
 
     if not is_ok(response):
-        raise Exception("An error occurred while getting a resource's information: "+str(response.code)+":"+str(response.reason))
+        raise Exception("An error occurred while getting a resource's information: "+str(response.status_code)+":"+str(response.reason))
 
     return response.json()
 
@@ -60,7 +60,7 @@ def list(pat: str, resource_registration_endpoint: str,
     response = request("GET", resource_registration_endpoint, headers=headers, verify=secure)
 
     if not is_ok(response):
-        raise Exception("An error occurred while listing resources: "+str(response.code)+":"+str(response.reason))
+        raise Exception("An error occurred while listing resources: "+str(response.status_code)+":"+str(response.reason))
 
     return response.json()
 
@@ -101,7 +101,7 @@ def create(pat: str, resource_registration_endpoint: str,
     response = request("POST", resource_registration_endpoint, data=payload, headers=headers, verify=secure)
 
     if not is_ok(response):
-        raise Exception("An error occurred while registering the resource: "+str(response.code)+":"+str(response.reason))
+        raise Exception("An error occurred while registering the resource: "+str(response.status_code)+":"+str(response.reason))
 
     try:
         return response.json()["_id"]
@@ -131,7 +131,7 @@ def delete(pat: str, resource_registration_endpoint: str,
     response = request("DELETE", resource_registration_endpoint + resource_id, headers=headers, verify=secure)
 
     if not is_ok(response):
-        raise Exception("An error occurred while deleting the resource: "+str(response.code)+":"+str(response.reason))
+        raise Exception("An error occurred while deleting the resource: "+str(response.status_code)+":"+str(response.reason))
 
 def update(pat: str, resource_registration_endpoint: str,
             resource_id: str,
@@ -180,7 +180,7 @@ def update(pat: str, resource_registration_endpoint: str,
     response = request("PUT", resource_registration_endpoint + resource_id, data=payload, headers=headers, verify=secure)
 
     if not is_ok(response):
-        raise Exception("An error occurred while registering the resource: "+str(response.code)+":"+str(response.reason))
+        raise Exception("An error occurred while registering the resource: "+str(response.status_code)+":"+str(response.reason))
 
     try:
         return response.json()["_id"]
@@ -252,7 +252,7 @@ def request_access_ticket(pat: str, permission_endpoint: str,
     response = request("POST", permission_endpoint , data=resources, headers=headers, verify=secure)
 
     if not is_ok(response):
-        raise Exception("An error occurred while requesting permission for a resource: "+str(response.code)+":"+str(response.reason))
+        raise Exception("An error occurred while requesting permission for a resource: "+str(response.status_code)+":"+str(response.reason))
 
     try:
         return response.json()["ticket"]
