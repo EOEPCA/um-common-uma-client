@@ -33,4 +33,4 @@ def is_ok(response: Response):
     """
     Returns True or False depending on the response code of the server 
     """
-    return response.status_code > 199 and response.status_code < 230
+    return response.status_code > 199 and response.status_code < 230 and "error" not in response.text.lower()
