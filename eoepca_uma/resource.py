@@ -35,7 +35,7 @@ def read(pat: str, resource_registration_endpoint: str,
     response = request("GET", resource_registration_endpoint + resource_id, headers=headers, verify=secure)
 
     if not is_ok(response):
-        raise Exception("An error occurred while getting a resource's information: "+str(response.status_code)+":"+str(response.reason))
+        raise Exception("An error occurred while getting a resource's information: "+str(response.status_code)+":"+str(response.reason)+":"+str(response.text))
 
     return response.json()
 
@@ -60,7 +60,7 @@ def list(pat: str, resource_registration_endpoint: str,
     response = request("GET", resource_registration_endpoint, headers=headers, verify=secure)
 
     if not is_ok(response):
-        raise Exception("An error occurred while listing resources: "+str(response.status_code)+":"+str(response.reason))
+        raise Exception("An error occurred while listing resources: "+str(response.status_code)+":"+str(response.reason)+":"+str(response.text))
 
     return response.json()
 
@@ -93,15 +93,16 @@ def create(pat: str, resource_registration_endpoint: str,
     dict_insert_if_exists(payload, "type", typ)
 
     headers = {
-        'content-type': "application/json",
-        'authorization': "Bearer "+pat,
+        'Content-Type': "application/json",
+        'Authorization': "Bearer "+pat,
     }
 
     disable_warnings_if_debug(secure)
-    response = request("POST", resource_registration_endpoint, data=payload, headers=headers, verify=secure)
+    response = request("POST", resource_registration_endpoint, json=payload, headers=headers, verify=secure)
 
     if not is_ok(response):
-        raise Exception("An error occurred while registering the resource: "+str(response.status_code)+":"+str(response.reason))
+        raise Exception("An error occurred while registering the resource: "+str(response.status_code)+":"+str(response.reason)+":"+str(response.text))
+
 
     try:
         return response.json()["_id"]
@@ -131,7 +132,7 @@ def delete(pat: str, resource_registration_endpoint: str,
     response = request("DELETE", resource_registration_endpoint + resource_id, headers=headers, verify=secure)
 
     if not is_ok(response):
-        raise Exception("An error occurred while deleting the resource: "+str(response.status_code)+":"+str(response.reason))
+        raise Exception("An error occurred while deleting the resource: "+str(response.status_code)+":"+str(response.reason)+":"+str(response.text))
 
 def update(pat: str, resource_registration_endpoint: str,
             resource_id: str,
@@ -177,10 +178,10 @@ def update(pat: str, resource_registration_endpoint: str,
     }
 
     disable_warnings_if_debug(secure)
-    response = request("PUT", resource_registration_endpoint + resource_id, data=payload, headers=headers, verify=secure)
+    response = request("PUT", resource_registration_endpoint + resource_id, json=payload, headers=headers, verify=secure)
 
     if not is_ok(response):
-        raise Exception("An error occurred while registering the resource: "+str(response.status_code)+":"+str(response.reason))
+        raise Exception("An error occurred while registering the resource: "+str(response.status_code)+":"+str(response.reason)+":"+str(response.text))
 
     try:
         return response.json()["_id"]
@@ -249,10 +250,10 @@ def request_access_ticket(pat: str, permission_endpoint: str,
         resources = resources[0] # Use a single dict instead of a list for 1 resource
 
     disable_warnings_if_debug(secure)
-    response = request("POST", permission_endpoint , data=resources, headers=headers, verify=secure)
+    response = request("POST", permission_endpoint , json=resources, headers=headers, verify=secure)
 
     if not is_ok(response):
-        raise Exception("An error occurred while requesting permission for a resource: "+str(response.status_code)+":"+str(response.reason))
+        raise Exception("An error occurred while requesting permission for a resource: "+str(response.status_code)+":"+str(response.reason)+":"+str(response.text))
 
     try:
         return response.json()["ticket"]
