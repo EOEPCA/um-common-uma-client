@@ -32,8 +32,10 @@ def read(pat: str, resource_registration_endpoint: str,
     headers={"Authorization": "Bearer "+pat}
 
     disable_warnings_if_debug(secure)
-    response = request("GET", resource_registration_endpoint + resource_id, headers=headers, verify=secure)
+    if resource_registration_endpoint[-1] is not "/":
+        resource_registration_endpoint += "/"
 
+    response = request("GET", resource_registration_endpoint + resource_id, headers=headers, verify=secure)
     if not is_ok(response):
         raise Exception("An error occurred while getting a resource's information: "+str(response.status_code)+":"+str(response.reason)+":"+str(response.text))
 
