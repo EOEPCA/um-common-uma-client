@@ -228,7 +228,8 @@ def request_access_ticket(pat: str, permission_endpoint: str,
 
     Args:
     - pat = String containing the pat (token)
-    - permission_endpoint = List of resources to request permission to.
+    - permission_endpoint = URL of the token permission endpoint in the AS 
+    - resources = List of resources to request permission to.
                             Format:
                             [
                                 {
