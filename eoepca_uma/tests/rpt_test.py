@@ -6,8 +6,6 @@ from eoepca_uma import rpt
 def test_valid_token_intr_data():
     valid = [
         {"active": "true", "permissions": [{"resource_id":"/simple/test", "resource_scopes": ["Auth"]}]},
-        {"active": "true", "permissions": [{"resource_id":"/simple/test/b", "resource_scopes": ["Auth"]}]},
-        {"active": "true", "permissions": [{"resource_id":"/simple/test/b", "resource_scopes": ["Auth", "Multiple"]}]},
         {"active": "true", "permissions": [{"resource_id":"/simple/test/b", "resource_scopes": ["Auth", "Multiple", "Scopes"]}]},
     ]
 
@@ -16,10 +14,14 @@ def test_valid_token_intr_data():
          "resource_scopes": ["Auth"]},
         {"resource_id":"/simple/test/b",
          "resource_scopes": ["Auth","Multiple","Scopes"]},
+        {"resource_id":"/simple/test/b",
+         "resource_scopes": ["Auth","Scopes"]},
     ]
 
     for i in valid:
         assert(rpt.valid_token_introspection_data(i, resources=resources) == True)
+
+({'active': 'true', 'permissions': [{'resource_id': '/simple/test/b', 'resource_scopes': ['Auth']}]},
 
 
 def test_invalid_token_intr_data():
@@ -30,15 +32,16 @@ def test_invalid_token_intr_data():
         {"active": "true", "permissions": [{"resource_id":"/simple/test", "resource_scopes": ["AAAAA"]}]},
         {"active": "true", "permissions": [{"resource_id":"/simple/invalid", "resource_scopes": ["Auth"]}]},
         {"active": "true", "permissions": [{"resource_id":"/simple/invalid", "resource_scopes": ["BBBB"]}]},
-        {"active": "true", "permissions": [{"resource_id":"/simple/test/b", "resource_scopes": ["Auth", "Multiple","Scopes", "Invallid"]}]},
-        {"active": "true", "permissions": [{"resource_id":"/simple/test/b", "resource_scopes": ["Multiple","Invallid"]}]},
+        {"active": "true", "permissions": [{"resource_id":"/simple/test/b", "resource_scopes": ["Auth", "Multiple","Scopes"]}]},
+        {"active": "true", "permissions": [{"resource_id":"/simple/test/b", "resource_scopes": []}]},
+        {"active": "true", "permissions": [{"resource_id":"/simple/test/b", "resource_scopes": ["Auth"]}]},
     ]
 
     resources = [
         {"resource_id":"/simple/test",
          "resource_scopes": ["Auth"]},
         {"resource_id":"/simple/test/b",
-         "resource_scopes": ["Auth","Multiple","Scopes"]},
+         "resource_scopes": ["Auth","Multiple","Scopes","Invalid"]},
     ]
 
 
