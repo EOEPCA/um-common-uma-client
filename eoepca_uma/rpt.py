@@ -79,18 +79,18 @@ def valid_token_introspection_data(rpt_info: dict, resources: List[dict], time_m
     """
     now = time()
 
-    if "exp" in rpt_info:
+    if "exp" in rpt_info and rpt_info["exp"] is not None:
         if rpt_info["exp"] < (now - time_margin) : return False
 
     # Not a time validity check per se, but a sanity check for corrupt / invalid data nontheless
-    if "iat" in rpt_info:
+    if "iat" in rpt_info and rpt_info["iat"] is not None:
         if rpt_info["iat"] > (now + time_margin) : return False
     
-    if "nbf" in rpt_info:
+    if "nbf" in rpt_info and rpt_info["nbf"] is not None:
         if rpt_info["nbf"] > (now + time_margin) : return False
     
     # Actual check of validity using the AS' criteria
-    if "active" not in rpt_info or rpt_info["active"] != "true": return False
+    if "active" not in rpt_info or rpt_info["active"] != True: return False
 
     # Check against the resources:
     if "permissions" not in rpt_info: return False
