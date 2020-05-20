@@ -21,9 +21,6 @@ def test_valid_token_intr_data():
     for i in valid:
         assert(rpt.valid_token_introspection_data(i, resources=resources) == True)
 
-({'active': 'true', 'permissions': [{'resource_id': '/simple/test/b', 'resource_scopes': ['Auth']}]},
-
-
 def test_invalid_token_intr_data():
     invalid = [
         [],
