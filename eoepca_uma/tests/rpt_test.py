@@ -5,22 +5,45 @@ from eoepca_uma import rpt
 
 def test_valid_token_intr_data():
     valid = [
-        {"active": "true"}
+        {"active": "true", "permissions": [{"resource_id":"/simple/test", "resource_scopes": ["Auth"]}]},
+        {"active": "true", "permissions": [{"resource_id":"/simple/test/b", "resource_scopes": ["Auth"]}]},
+        {"active": "true", "permissions": [{"resource_id":"/simple/test/b", "resource_scopes": ["Auth", "Multiple"]}]},
+        {"active": "true", "permissions": [{"resource_id":"/simple/test/b", "resource_scopes": ["Auth", "Multiple", "Scopes"]}]},
+    ]
+
+    resources = [
+        {"resource_id":"/simple/test",
+         "resource_scopes": ["Auth"]},
+        {"resource_id":"/simple/test/b",
+         "resource_scopes": ["Auth","Multiple","Scopes"]},
     ]
 
     for i in valid:
-        assert(rpt.valid_token_introspection_data(i) == True)
+        assert(rpt.valid_token_introspection_data(i, resources=resources) == True)
 
 
 def test_invalid_token_intr_data():
     invalid = [
         [],
         {},
-        {"active": "false"}
+        {"active": "false"},
+        {"active": "true", "permissions": [{"resource_id":"/simple/test", "resource_scopes": ["AAAAA"]}]},
+        {"active": "true", "permissions": [{"resource_id":"/simple/invalid", "resource_scopes": ["Auth"]}]},
+        {"active": "true", "permissions": [{"resource_id":"/simple/invalid", "resource_scopes": ["BBBB"]}]},
+        {"active": "true", "permissions": [{"resource_id":"/simple/test/b", "resource_scopes": ["Auth", "Multiple","Scopes", "Invallid"]}]},
+        {"active": "true", "permissions": [{"resource_id":"/simple/test/b", "resource_scopes": ["Multiple","Invallid"]}]},
     ]
-    
+
+    resources = [
+        {"resource_id":"/simple/test",
+         "resource_scopes": ["Auth"]},
+        {"resource_id":"/simple/test/b",
+         "resource_scopes": ["Auth","Multiple","Scopes"]},
+    ]
+
+
     for i in invalid:
-        assert(rpt.valid_token_introspection_data(i) == False)
+        assert(rpt.valid_token_introspection_data(i,resources=resources) == False)
 
 
 def test_time_valid_token_intr_data():
@@ -45,9 +68,16 @@ def test_time_valid_token_intr_data():
         }
     ]
 
+    resources = [
+        {"resource_id":"/simple/test",
+         "resource_scopes": ["Auth"]},
+    ]
+
     for i in valid:
+        # We are just testing time here
         i["active"] = "true"
-        assert(rpt.valid_token_introspection_data(i) == True)
+        i["permissions"]= [{"resource_id":"/simple/test", "resource_scopes": ["Auth"]}]
+        assert(rpt.valid_token_introspection_data(i, resources=resources) == True)
 
 
 def test_time_invalid_token_intr_data():
@@ -73,7 +103,13 @@ def test_time_invalid_token_intr_data():
         }
     ]
 
+    resources = [
+        {"resource_id":"/simple/test",
+         "resource_scopes": ["Auth"]},
+    ]
+
     for i in valid:
         # Check time validity, even with an active true
         i["active"] = "true"
-        assert(rpt.valid_token_introspection_data(i) == False)
+        i["permissions"]= [{"resource_id":"/simple/test", "resource_scopes": ["Auth"]}]
+        assert(rpt.valid_token_introspection_data(i, resources=resources) == False)
