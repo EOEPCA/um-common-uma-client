@@ -159,11 +159,13 @@ def request_for_rpt(client_creds_token: str,
                     token_endpoint: str, ticket: str,
                     claim_token: str = None, claim_token_format: str = None,
                     scopes: List[str] = None,
+                    rpt: str = None,
+                    pct: str = None,
                     secure: bool = True) -> dict:
     """
-    (NOTE: TODO: Missing PCT, RPT option)
-
     Requests the AS for an RPT given the arguments used.
+
+    Reference: https://docs.kantarainitiative.org/uma/wg/rec-oauth-uma-grant-2.0.html#uma-grant-type
 
     - CAN THROW EXCEPTIONS
     - MAKES A CONNECTION TO AN EXTERNAL ENDPOINT
@@ -175,6 +177,8 @@ def request_for_rpt(client_creds_token: str,
     - claim_token (Optional) = A string containing directly pushed claim information in the indicated format. It MUST be base64url encoded unless specified otherwise by the claim token format
     - claim_token_format (Optional) = If this parameter is used, it MUST appear together with the claim_token parameter. A string specifying the format of the claim token in which the client is directly pushing claims to the authorization server. The string MAY be a URI
     - scopes (Optional) = List of requested scopes
+    - rpt (Optional) = A string containing an existing RPT. Allows the Auth Server to upgrade instead of issuing a new RPT.
+    - pct (Optional) = A string with an old PCT to optimize looking for a new RPT.
     - secure = toggle checking of SSL certificates. Activating this is recommended on production environments
     
     Returns:
@@ -193,6 +197,11 @@ def request_for_rpt(client_creds_token: str,
     
     if scopes and len(scopes) > 0:
         payload+="&scope="+" ".join(scopes)
+    
+    if rpt and len(rpt) > 0:
+        payload+="&rpt="+rpt
+    if pct and len(pct) > 0:
+        payload+="&pct="+pct
 
     disable_warnings_if_debug(secure)
     response = request("POST", token_endpoint , data=payload, headers=headers, verify=secure)
