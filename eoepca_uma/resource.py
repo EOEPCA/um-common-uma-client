@@ -128,6 +128,9 @@ def delete(pat: str, resource_registration_endpoint: str,
     Returns:
         Nothing. If no exceptions are raised, the operation completed succesfully.
     """
+    if resource_registration_endpoint[-1] is not "/":
+        resource_registration_endpoint += "/"
+
     headers={"Authorization": "Bearer "+pat}
 
     disable_warnings_if_debug(secure)
@@ -173,6 +176,9 @@ def update(pat: str, resource_registration_endpoint: str,
 
     if len(payload) == 0:
         raise Exception("No attribute to update the resource with, payload empty")
+
+    if resource_registration_endpoint[-1] is not "/":
+        resource_registration_endpoint += "/"
 
     headers = {
         'content-type': "application/json",
