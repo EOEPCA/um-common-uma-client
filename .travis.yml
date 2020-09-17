@@ -3,7 +3,7 @@ python: 3.6.9
 
 jobs:
   include:
-   - stage: Static Code Analysis    
+    - stage: Static Code Analysis    
       language: java
       if: branch = develop
       before_install:
