@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
   name = 'eoepca-uma',
-  version = '0.2.3',
+  version = '0.2.4',
   author = 'EOEPCA',
   author_email = 'angel.lozano@deimos-space.com',
   description = 'Python library to interact with UMA protocol',
